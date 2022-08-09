@@ -52,20 +52,22 @@ router.get("/movies/:indexNumber", (req, res) => {
     const movieName = ["Rang de basanti", "The shining", "Lord of the ring", "Batman begins", "Bahubali", "Spiderman", "Nambi Effect"]
     let ind = req.params // ind = { indexNumber : 3}
     let indexOfMovie = + (ind.indexNumber)
-    
+
     console.log(ind)
 
     console.log(typeof indexOfMovie)
-    
-    if(!indexOfMovie){
-           res.send("Please provide indexNumber")
-     }
-    else if(indexOfMovie < 0 || indexOfMovie > movieName.length) {
-        res.send("please insert valid index")
+    if (indexOfMovie === 0) {
+        return res.send(movieName[0])
     }
-    else{
-        res.send(movieName[indexOfMovie])
+    if (!indexOfMovie) {
+        return res.send("Please provide valid index Number")
     }
+    if (indexOfMovie < 0 || indexOfMovie >= movieName.length) {
+        return res.send("the index value is not correct")
+    }
+
+    res.send(movieName[indexOfMovie])
+
 
 })
 
@@ -74,22 +76,22 @@ router.get("/movies/:indexNumber", (req, res) => {
 
 router.get("/films", (req, res) => {
 
-    const movieData =[
+    const movieData = [
         {
-            id : 1,
-            name:"The Shining"
+            id: 1,
+            name: "The Shining"
         },
         {
-            id : 2,
-            name:"Incendies"
+            id: 2,
+            name: "Incendies"
         },
         {
-            id : 3,
-            name:"Rang de Basanti"
+            id: 3,
+            name: "Rang de Basanti"
         },
         {
-            id : 4,
-            name:"Finding Nemo"
+            id: 4,
+            name: "Finding Nemo"
         }
     ]
 
@@ -101,38 +103,100 @@ router.get("/films", (req, res) => {
 
 router.get("/films/:filmId", (req, res) => {
 
-    const movieData =[
+    const movieData = [
         {
-            id : 1,
-            name:"The Shining"
+            id: 1,
+            name: "The Shining"
         },
         {
-            id : 2,
-            name:"Incendies"
+            id: 2,
+            name: "Incendies"
         },
         {
-            id : 3,
-            name:"Rang de Basanti"
+            id: 3,
+            name: "Rang de Basanti"
         },
         {
-            id : 4,
-            name:"Finding Nemo"
+            id: 4,
+            name: "Finding Nemo"
         }
     ]
 
-    const filmNameWithId =  +(req.params.filmId) // {filmId : 3}
+    const filmNameWithId = +(req.params.filmId) // {filmId : 3}
 
-    if(!filmNameWithId){
-        res.send("please provide filmId")
+    if (filmNameWithId === 0) {
+        return res.send("No movie present with this id")
     }
-    for(let i=0;i<movieData.length;i++){
-        if(movieData[i].id === filmNameWithId){
-            res.send(movieData[i])
+    if (!filmNameWithId) {
+        return res.send("please provide filmId")
+    }
+    for (let i = 0; i < movieData.length; i++) {
+        if (movieData[i].id === filmNameWithId) {
+            return res.send(movieData[i])
         }
     }
 
     res.send("No movie present with this id")
 
 })
+
+// -write an api which gives the missing number in an array of integers starting from 1….e.g [1,2,3,5,6,7] : 4 is missing
+// Your route code will look like this
+
+router.get("/sol1", function (req, res) {
+
+    //logic : sum of numbers is n(n+1)/2..so get sum of all numbers in array. now take sum of numbers till last digit in the array
+
+    ///LOGIC WILL GO HERE
+
+    let firstNthNumber = [1,2,3,5,6,7]
+
+    let sum = firstNthNumber.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue
+    }, 0)     // (1+2+3+5+6+7 = 24)
+
+    let lastNumberArrray = firstNthNumber.pop()
+
+    let sumFirstNhtNumber = lastNumberArrray * (lastNumberArrray + 1) / 2  // (7(7+1)/2) == 28 (n(n+1)/2)
+
+    let missingNumberInArray = sumFirstNhtNumber - sum   // 28 - 24 == 4
+
+    res.send({ data: missingNumberInArray });
+});
+
+// -write an api which gives the missing number in an array of integers starting from anywhere….e.g [33, 34, 35, 37, 38]: 36 is missing
+// Your route code will look like this
+
+router.get("/sol2", function (req, res) {
+
+    //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. 
+    //now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
+
+    const arrayOfNumber = [33, 34, 35, 37, 38]
+
+    ///LOGIC WILL GO HERE 
+
+
+    let sumOfArray = arrayOfNumber.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue
+    }, 0) // (33+34+35+37+38)
+
+    let firstElementOfArray = arrayOfNumber.shift()
+    let lastNumberOfArrray = arrayOfNumber.pop()
+
+    let sumOfElement = 0;
+
+    for (let i = firstElementOfArray; i <= lastNumberOfArrray; i++) {
+        sumOfElement += i // sumOfElement = sumOfElement + i
+    }// (33+34+35+36+37+38)
+
+    let missingElementInArray = sumOfElement - sumOfArray // 36
+
+    res.send({ data: missingElementInArray });
+});
+
+
+
+
 
 module.exports = router;
