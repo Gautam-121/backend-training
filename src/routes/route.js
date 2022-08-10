@@ -1,35 +1,50 @@
 const express = require('express');
-const _ = require('underscore')
-
-const abc = require('../introduction/intro')
 const loggerModule = require('../logger/logger.js')
-const formatterModule = require('../validator/formatter') 
-const helperModule = require('../util/helper')
+const { trim, lowerCase, upperCase } = require('../validator/formatter')
+const { printDate, printMonth, getBatchInfo } = require('../util/helper')
 const router = express.Router();
 
 router.get('/test-me', function (req, res) {
-    console.log('My batch is', abc.name)
-    abc.printName()
-    loggerModule.printInfo()
-    formatterModule.trimMyString()
-    formatterModule.getUpperCaseString()
-    formatterModule.changetoLowerCase()
-    helperModule.getTodaysDate()
-    helperModule.getCurrentMonth()
-    helperModule.printBatchDetails()
-    let weekdend = ['Saturday','Sunday','Monday']
-    let result = _.first(weekdend, 2)
-    console.log('Unserscore example resultr is ',result)
+
+
+    loggerModule.welcome()
+    trim();
+    lowerCase();
+    upperCase();
+    printDate();
+    printMonth();
+    getBatchInfo()
+
     res.send('My second ever api!')
 });
 
+router.get('/test-me', function (req, res) {
+    let monthOfYear = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sept", "oct", "nov", "dec"]
+    let createFourEqualPart = lodash.chunk(monthOfYear, 3)
+    console.log(createFourEqualPart)
 
-router.get('/test-you', function(req, res){
-    res.send('This is the second routes implementation')
+    let firstTenOddNumber = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+    let lastNineOddNumber = lodash.tail(firstTenOddNumber)
+    console.log(lastNineOddNumber)
+
+    let firstArray = [1, 2, 3]
+    let secondArray = [2, 3, 4]
+    let thirdArray = [3, 4, 5]
+    let fourthArray = [4, 5, 6]
+    let fifthArray = [5, 6, 7]
+
+    let unionOfAllTheArray = lodash.union(firstArray, secondArray, thirdArray, fourthArray, fifthArray)
+    console.log(unionOfAllTheArray)
+
+    let movieAndDrama = [["horror", "The Shining"], ["drama", "Titanic"], ["thriller", "Shutter Island"], ["fantasy", "Pans Labyrinth"]]
+    let pairOfmovieAndDrama = lodash.fromPairs(movieAndDrama)
+    console.log(pairOfmovieAndDrama)
+
+    res.send("My first Api")
+
+
 })
 
-router.get('/give-me-students-data',function(req, res){
 
-})
 module.exports = router;
 // adding this comment for no reason
