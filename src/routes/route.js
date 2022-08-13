@@ -252,16 +252,21 @@ let person = [
 
 router.post("/getvotingstatus", function (req, res) {
     let VotingAge = req.query.age
-    let ElegiblePerson = []
-    for (let i = 0; i < person.length; i++) {
+    // let ElegiblePerson = []
+    // for (let i = 0; i < person.length; i++) {
 
-        if (person[i].age > VotingAge) {
-            person[i].votingStartus = true;
-            ElegiblePerson.push(person[i])
-        }
-    }
+    //     if (person[i].age > VotingAge) {
+    //         person[i].votingStartus = true;
+    //         ElegiblePerson.push(person[i])
+    //     }
+    // }
 
-    res.send({ Persons: ElegiblePerson, status: true })
+    let final = person.filter(element=> {
+       return  element.age > VotingAge
+    })
+
+    // res.send({ Persons: ElegiblePerson, status: true })
+    res.send({ Persons: final, status: true })
 })
 
 
