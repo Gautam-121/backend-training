@@ -99,15 +99,15 @@ const createOrder = async (req,res)=>{
 
     if(!productDetail) return res.send({msg : "ProductId os not from product collection"})
 
-    if(req.isfreeappuser == "true"){
-
+    if(req.isfreeappuser=="true"){    
+        
         data["isFreeAppUser"] = req.isfreeappuser
         const saveData = await orderModel.create(data)
         return res.send({msg : saveData , status : true})
     }
 
     if(userDetail.balance < productDetail.price){
-        return res.send({msg : "user have not sufficient balance to purchase the product",status : false})
+        return res.send({msg : "user have not sufficient balance to purchase the product", status : false})
     }
 
     const remainingBalance = userDetail.balance -  productDetail.price
@@ -120,8 +120,9 @@ const createOrder = async (req,res)=>{
     const savedData = await orderModel.create(data)
 
     console.log(data)
+   
 
-    res.send({msg : data , status : true})
+    res.send({msg : savedData , status : true})
 
 }
 

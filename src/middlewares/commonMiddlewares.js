@@ -24,9 +24,8 @@ const checkHeader = (req,res,next)=>{
 
     const freeAppUser = req.headers.isfreeappuser
     if(!freeAppUser) return res.send({msg : "Header is missing", status : false})
-    req.isfreeappuser =  req.headers.isfreeappuser
+    req.isfreeappuser = freeAppUser
     next()
-
 }
 
 // module.exports.mid1= mid1
