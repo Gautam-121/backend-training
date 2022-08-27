@@ -10,7 +10,6 @@ const createUser = async function (abcd, xyz) {
   //the second parameter is always the response
   let data = abcd.body;
   let savedData = await userModel.create(data);
-  console.log(abcd.newAtribute);
   xyz.send({ msg: savedData });
 };
 
@@ -18,7 +17,7 @@ const loginUser = async function (req, res) {
   let userName = req.body.emailId;
   let password = req.body.password;
 
-  let user = await userModel.findOne({ emailId: userName, password: password });
+  let user = await userModel.findOne({ emailId: userName, password: password }); // {} , null
   if (!user)
     return res.send({
       status: false,
@@ -37,7 +36,7 @@ const loginUser = async function (req, res) {
       batch: "thorium",
       organisation: "FunctionUp",
     },
-    "functionup-plutonium-very-very-secret-key"
+    "my name is gautam"
   );
   res.setHeader("x-auth-token", token);
   res.send({ status: true, token: token });

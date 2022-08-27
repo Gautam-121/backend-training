@@ -1,20 +1,38 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 
-const userSchema = new mongoose.Schema( {
-    firstName: String,
-    lastName: String,
-    mobile: {
+const userSchema = new mongoose.Schema({
+
+    firstName : {
         type: String,
-
-        required: true
+        required: "First name is required"
     },
-    emailId: String,
-    password: String,
-    gender: {
+    lastName : {
+        type: String,
+        required: "Last name is required"
+    },
+    mobile : {
+        type: String,
+        unique: true
+    },
+    emailId : {
+        type: String,
+        unique: true,
+        required : "Email id is required"
+    },
+    password : {
+        type: String,
+        required: "Password is required"
+    },
+    gender : {
         type: String,
         enum: ["male", "female", "other"]
     },
+    isDeleted : {
+        type: Boolean,
+        default: false
+    },
     age: Number,
-}, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema)
+}, { timestamps: true })
+
+module.exports = mongoose.model("newUser",userSchema)
