@@ -6,12 +6,17 @@ const userModel = require("../models/userModel");
   Read all the comments multiple times to understand why we are doing what we are doing in login api and getUserData api
 */
 const createUser = async function (abcd, xyz) {
-  //You can name the req, res objects anything.
-  //but the first parameter is always the request 
-  //the second parameter is always the response
-  let data = abcd.body;
-  let savedData = await userModel.create(data);
-  xyz.send({ msg: savedData });
+
+  try {
+    //You can name the req, res objects anything.
+    //but the first parameter is always the request 
+    //the second parameter is always the response
+    let data = abcd.body;
+    let savedData = await userModel.create(data);
+    xyz.status(201).send({ msg: savedData });
+  } catch (error) {
+    res.status(500).send({msg :"server error" , error : error.message})
+  }
 };
 
 // const loginUser = async function (req, res) {
@@ -44,28 +49,34 @@ const createUser = async function (abcd, xyz) {
 // };
 
 
-const loginUser = async (req,res)=>{
-      
-     let  emailUser = req.body.emailUser
-     let passwordUser = req.body.passwordUser
+const loginUser = async (req, res) => {
 
-     const userExist = await userModel.findOne({emaiId : emailUser ,password : passwordUser})
+  try {
 
-     if(!userExist) return res.send({msg : `No user refgister with ${emailUser}`, status : false})
+    let emailUser = req.body.emailUser
+    let passwordUser = req.body.passwordUser
 
-     const token = await jwt.sign(
+    const userExist = await userModel.findOne({ emailId: emailUser, password: passwordUser })
+
+    if (!userExist) return res.status(400).send({ msg: `No user refgister with ${emailUser}`, status: false })
+
+    const token = await jwt.sign(
       {
-        user : userExist._id.toString(),
-        batch : "Plutonium",
-        org : "FunctionUp"
-      }, 
-         "MynameisGautam"
-      )
+        userId: userExist._id.toString(),
+        batch: "Plutonium",
+        org: "FunctionUp"
+      },
+      "MynameisGautam"
+    )
 
-      res.setHeader("x-auth-token",token)
-      res.send({token : token , status : true})
+    res.setHeader("x-auth-token", token)
+    res.status(201).send({ token: token, status: true })
 
-} 
+  } catch (error) {
+    res.status(500).send({msg :"server error" , error : error.message})
+  }
+
+}
 
 // const getUserData = async function (req, res) {
 //   let token = req.headers["x-Auth-token"];
@@ -98,24 +109,21 @@ const loginUser = async (req,res)=>{
 //   // Note: Try to see what happens if we change the secret while decoding the token
 // };
 
-const getUserData = async(req,res)=>{
-  
-  let token = req.headers["x-Auth-Token"]
-  let userId = req.params.userId
+const getUserData = async (req, res) => {
 
-  if(!token) token = req.headers["x-auth-token"]
+  try {
 
-  if(!token) res.send({msg : "token is absent",status : false})
+    let userId = req.params.userId
 
-  let tokenVerify = await jwt.verify(token , "MynameisGautam")
+    let userDetail = await userModel.findById(userId)
 
-  if(!tokenVerify) return res.send({msg : "token is not match",status : false})
+    if (!userDetail) return res.status(404).send({ msg: "No document found ", status: true })
 
-  let userDetail = await userModel.findById(userId)
+    res.status(200).send({ msg: userDetail, status: true })
 
-  if(!userDetail) return res.send({msg : "No document found ",status : true})
-
-  res.send({msg : userDetail , status : true})
+  } catch (error) {
+    res.status(500).send({msg :"server error" , error : error.message})
+  }
 
 }
 
@@ -138,51 +146,44 @@ const getUserData = async(req,res)=>{
 //   res.send({ status: updatedUser, data: updatedUser });
 // };
 
-const updateUser = async(req,res)=>{
+const updateUser = async (req, res) => {
 
-  let token = req.headers["x-Auth-Token"]
-  let userId = req.params.userId
-  let uspadateUserData = req.body
+  try {
 
-  if(!token) token = req.headers["x-auth-token"]
+    let userId = req.params.userId
+    let uspadateUserData = req.body
 
-  if(!token) res.send({msg : "token is absent",status : false})
+    let userDetail = await userModel.findById(userId)
 
-  let tokenVerify = await jwt.verify(token , "MynameisGautam")
+    if (!userDetail) return res.status(404).send({ msg: "No document found ", status: true })
 
-  if(!tokenVerify) return res.send({msg : "token is not match",status : false})
+    let updateDetail = await userModel.findByIdAndUpdate({ _id: userId }, { $set: uspadateUserData }, { new: true })
 
-  let userDetail = await userModel.findById(userId)
+    res.status(201).send({ msg: updateDetail, status: true })
 
-  if(!userDetail) return res.send({msg : "No document found ",status : true})
-
-  let updateDetail = await userModel.findByIdAndUpdate({_id : userId},{$set : uspadateUserData},{new : true})
-
-  res.send({msg : updateDetail , status : true})
+  } catch (error) {
+    res.status(500).send({msg :"server error" , error : error.message})
+  }
 
 }
 
-const deleteUser = async(req,res)=>{
-     
-  let token = req.headers["x-Auth-Token"]
-  let userId = req.params.userId
-  
-  if(!token) token = req.headers["x-auth-token"]
+const deleteUser = async (req, res) => {
 
-  if(!token) return res.send({msg : "token is absent",status : false})
+  try {
 
-  let tokenVerify = await jwt.verify(token , "MynameisGautam")
+    let userId = req.params.userId
 
-  if(!tokenVerify) return res.send({msg : "token is not match",status : false})
+    let userDetail = await userModel.findById(userId)
 
-  let userDetail = await userModel.findById(userId)
+    if (!userDetail) return res.status(404).send({ msg: "No document found ", status: true })
 
-  if(!userDetail) return res.send({msg : "No document found ",status : true})
+    const deleteUserData = await userModel.findByIdAndUpdate({ _id: userId }, { $set: { isDeleted: true } }, { new: true })
 
-  const deleteUserData = await userModel.findByIdAndUpdate({_id : userId},{$set : {isDeleted : true}},{new : true})
+    res.status(201).send({ msg: deleteUserData, status: true })
 
-  res.send({msg : deleteUserData , status : true})
-
+  } catch (error) {
+    res.status(500).send({msg :"server error" , error : error.message})
+  }
 }
 
 

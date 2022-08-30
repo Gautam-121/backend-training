@@ -2,32 +2,32 @@ const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
 
-    firstName : {
+    firstName: {
         type: String,
         required: "First name is required"
     },
-    lastName : {
+    lastName: {
         type: String,
         required: "Last name is required"
     },
-    mobile : {
+    mobile: {
         type: String,
         unique: true
     },
-    emailId : {
+    emailId: {
         type: String,
         unique: true,
-        required : "Email id is required"
+        required: "Email id is required"
     },
-    password : {
+    password: {
         type: String,
         required: "Password is required"
     },
-    gender : {
+    gender: {
         type: String,
         enum: ["male", "female", "other"]
     },
-    isDeleted : {
+    isDeleted: {
         type: Boolean,
         default: false
     },
@@ -35,4 +35,4 @@ const userSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-module.exports = mongoose.model("newUser",userSchema)
+module.exports = mongoose.model("newUser", userSchema)
